@@ -2,6 +2,7 @@ package ru.vigivn.githubjobs.ui.position_details
 
 import android.os.Bundle
 import android.text.Html
+import android.widget.ScrollView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
@@ -40,6 +41,13 @@ class PositionDetailsActivity : AppCompatActivity() {
                     it.description,
                     Html.FROM_HTML_SEPARATOR_LINE_BREAK_BLOCKQUOTE
                 ).toString()
+                howToApply.text = Html.fromHtml(
+                    it.howToApply,
+                    Html.FROM_HTML_SEPARATOR_LINE_BREAK_BLOCKQUOTE
+                ).toString()
+                btnApply.setOnClickListener {
+                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                }
             }
 
             Picasso.get().load(it.companyLogo).into(binding.logo)
