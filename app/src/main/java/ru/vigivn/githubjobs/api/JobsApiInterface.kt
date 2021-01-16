@@ -8,7 +8,10 @@ import ru.vigivn.githubjobs.model.Position
 
 interface JobsApiInterface {
     @GET("positions.json")
-    fun getPositions(@Query("description") description: String): Single<List<Position>>
+    fun getPositions(
+        @Query("description") description: String,
+        @Query("location") location: String
+    ): Single<List<Position>>
 
     @GET("positions/{position_id}.json")
     fun getPosition(@Path("position_id") id: String): Single<Position>
