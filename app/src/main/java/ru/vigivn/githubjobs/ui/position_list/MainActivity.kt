@@ -4,23 +4,28 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ru.vigivn.githubjobs.databinding.ActivityMainBinding
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val adapter = PositionListAdapter()
-    private val viewModel: PositionListViewModel by viewModels()
+    private lateinit var viewModel: PositionListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.positionList.observe(this) {
+        viewModel = ViewModelProvider(this).get(PositionListViewModel::class.java)
+
+        viewModel.positionList.observe(this, Observer{
             adapter.setData(it)
-        }
+        })
 
         with(binding) {
             positionList.adapter = adapter

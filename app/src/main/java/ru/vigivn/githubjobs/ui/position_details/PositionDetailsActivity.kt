@@ -3,36 +3,29 @@ package ru.vigivn.githubjobs.ui.position_details
 import android.os.Bundle
 import android.text.Html
 import android.widget.ScrollView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
-import ru.vigivn.githubjobs.api.JobsApiClient
+import dagger.hilt.android.AndroidEntryPoint
 import ru.vigivn.githubjobs.databinding.ActivityPositionDetailsBinding
 
 
+@AndroidEntryPoint
 class PositionDetailsActivity : AppCompatActivity() {
-    lateinit var binding: ActivityPositionDetailsBinding
+    private lateinit var binding: ActivityPositionDetailsBinding
+    private lateinit var viewModel: PositionDetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPositionDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = ViewModelProvider(this).get(PositionDetailsViewModel::class.java)
+
         val id = intent.getStringExtra("id") ?: ""
-        val api = JobsApiClient.getClient()
-        val repository = PositionDetailsRepository(api)
 
-        val viewModel: PositionDetailsViewModel by viewModels {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return PositionDetailsViewModel(repository, id) as T
-                }
-            }
-        }
-
-        viewModel.positionDetails.observe(this) {
+        viewModel.positionDetails.observe(this, Observer{
             with(binding) {
                 title.text = it.title
                 company.text = it.company
@@ -51,6 +44,6 @@ class PositionDetailsActivity : AppCompatActivity() {
             }
 
             Picasso.get().load(it.companyLogo).into(binding.logo)
-        }
+        })
     }
 }

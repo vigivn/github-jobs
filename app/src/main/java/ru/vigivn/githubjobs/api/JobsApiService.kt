@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.vigivn.githubjobs.model.Position
 
-interface JobsApiInterface {
+interface JobsApiService {
     @GET("positions.json")
     fun getPositions(
         @Query("description") description: String,
