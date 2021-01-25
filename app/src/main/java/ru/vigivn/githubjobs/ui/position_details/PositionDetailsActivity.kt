@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import ru.vigivn.githubjobs.databinding.ActivityPositionDetailsBinding
+import ru.vigivn.githubjobs.model.Position
 
 
 @AndroidEntryPoint
@@ -24,26 +25,35 @@ class PositionDetailsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(PositionDetailsViewModel::class.java)
 
         val id = intent.getStringExtra("id") ?: ""
+        viewModel.fetch(id)
 
+        observe()
+    }
+
+    private fun observe() {
         viewModel.positionDetails.observe(this, Observer{
-            with(binding) {
-                title.text = it.title
-                company.text = it.company
-                location.text = it.location
-                description.text = Html.fromHtml(
-                    it.description,
-                    Html.FROM_HTML_SEPARATOR_LINE_BREAK_BLOCKQUOTE
-                ).toString()
-                howToApply.text = Html.fromHtml(
-                    it.howToApply,
-                    Html.FROM_HTML_SEPARATOR_LINE_BREAK_BLOCKQUOTE
-                ).toString()
-                btnApply.setOnClickListener {
-                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                }
-            }
-
-            Picasso.get().load(it.companyLogo).into(binding.logo)
+            bindUI(it)
         })
+    }
+
+    private fun bindUI(position: Position) {
+        with(binding) {
+            title.text = position.title
+            company.text = position.company
+            location.text = position.location
+            description.text = Html.fromHtml(
+                position.description,
+                Html.FROM_HTML_SEPARATOR_LINE_BREAK_BLOCKQUOTE
+            ).toString()
+            howToApply.text = Html.fromHtml(
+                position.howToApply,
+                Html.FROM_HTML_SEPARATOR_LINE_BREAK_BLOCKQUOTE
+            ).toString()
+            btnApply.setOnClickListener {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        }
+
+        Picasso.get().load(position.companyLogo).into(binding.logo)
     }
 }

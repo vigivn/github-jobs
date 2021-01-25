@@ -22,11 +22,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this).get(PositionListViewModel::class.java)
+        observe()
+        bindUI()
+        viewModel.fetch()
+    }
 
-        viewModel.positionList.observe(this, Observer{
+    private fun observe() {
+        viewModel.positionList.observe(this, Observer {
             adapter.setData(it)
         })
+    }
 
+    private fun bindUI() {
         with(binding) {
             positionList.adapter = adapter
             positionList.layoutManager = LinearLayoutManager(applicationContext)
